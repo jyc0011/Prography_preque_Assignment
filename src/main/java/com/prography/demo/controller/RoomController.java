@@ -1,6 +1,7 @@
 package com.prography.demo.controller;
 
 import com.prography.demo.dto.request.CreateRoomRequestDto;
+import com.prography.demo.dto.request.ExitRoomRequest;
 import com.prography.demo.dto.request.JoinRoomRequest;
 import com.prography.demo.global.api.ApiResponse;
 import com.prography.demo.service.RoomService;
@@ -57,5 +58,16 @@ public class RoomController {
             @RequestBody JoinRoomRequest body
     ) {
         return roomService.joinRoom(roomId, body.getUserId());
+    }
+
+
+    @PostMapping("/out/{roomId}")
+    @Operation(summary = "방 나가기 API", description = """
+        - 유저가 방에 참가중이어야 나가기 가능<br/>
+        - 방 상태가 WAIT이어야 가능<br/>
+        - host가 나가면 전체 퇴장 + 방 상태 FINISH
+        """)
+    public ApiResponse<Void> leaveRoom(@PathVariable Integer roomId, @RequestBody ExitRoomRequest body) {
+        return roomService.leaveRoom(roomId, body.getUserId());
     }
 }

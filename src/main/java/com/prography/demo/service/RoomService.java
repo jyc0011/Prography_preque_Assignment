@@ -21,6 +21,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RoomService {
@@ -138,6 +140,42 @@ public class RoomService {
         userRoom.setUser_id(userId);
         userRoom.setRoom_id(roomId);
         userRoomRepository.save(userRoom);
+
+        return ApiResponse.onSuccess(null);
+    }
+
+    @Transactional
+    public ApiResponse<Void> leaveRoom(Integer roomId, Integer userId) {
+        // 1) 방 존재?
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (room == null) {
+            return ApiResponse.onFailure(null);
+        }
+
+        // 2) 해당 방에 참가 중인지?
+        UserRoom userRoom = userRoomRepository.findByUser_idAndRoom_id(userId, roomId).orElse(null);
+        if (userRoom == null) {
+            return ApiResponse.onFailure(null);
+        }
+
+        // 3) 방 상태가 WAIT이 아닌 경우 (PROGRESS or FINISH)
+        if (room.getStatus() != RoomStatus.WAIT) {
+            return ApiResponse.onFailure(null);
+        }
+
+        // 4) 만약 호스트가 나가면, 방에 있던 모두 나가기 → 방 상태=FINISH
+        if (room.getHost().equals(userId)) {
+            // 방 참가자 전부 삭제
+            List<UserRoom> participants = userRoomRepository.findAllByRoom_id(roomId);
+            userRoomRepository.deleteAllInBatch(participants);
+
+            // 방 상태 FINISH
+            room.setStatus(RoomStatus.FINISH);
+            roomRepository.save(room);
+        } else {
+            // 호스트가 아닌 경우, 단순히 본인만 나가기
+            userRoomRepository.delete(userRoom);
+        }
 
         return ApiResponse.onSuccess(null);
     }

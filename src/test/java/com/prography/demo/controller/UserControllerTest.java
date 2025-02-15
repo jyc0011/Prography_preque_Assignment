@@ -35,11 +35,11 @@ class UserControllerTest {
 
         List<UserResponseDto> mockList = List.of(
                 UserResponseDto.builder()
-                        .id(1L).fakerId(1).name("jungran.gwon").email("knam@yahoo.com")
+                        .id(1).fakerId(1).name("jungran.gwon").email("knam@yahoo.com")
                         .status("ACTIVE").createdAt("2025-02-15 12:00:00").updatedAt("2025-02-15 12:00:00")
                         .build(),
                 UserResponseDto.builder()
-                        .id(2L).fakerId(2).name("myungho.lim").email("go.minji@hotmail.com")
+                        .id(2).fakerId(2).name("myungho.lim").email("go.minji@hotmail.com")
                         .status("ACTIVE").createdAt("2025-02-15 12:00:00").updatedAt("2025-02-15 12:00:00")
                         .build()
         );
