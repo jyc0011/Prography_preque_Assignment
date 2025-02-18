@@ -13,8 +13,8 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.Duration;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class GameService {
         }
 
         // 4) 정원(단식=2, 복식=4) 꽉 찼는지
-        long participantCount = userRoomRepository.countByRoom_id(roomId);
+        long participantCount = userRoomRepository.countByRoomId(roomId);
         long capacity = (room.getRoom_type() == RoomType.SINGLE) ? 2 : 4;
         if (participantCount < capacity) {
             return ApiResponse.onFailure(null);
@@ -84,7 +84,7 @@ public class GameService {
         }
 
         // 3) userId가 해당 방에 참가 중인지
-        UserRoom userRoom = userRoomRepository.findByUser_idAndRoom_id(userId, roomId).orElse(null);
+        UserRoom userRoom = userRoomRepository.findByUsersIdAndRoomId(userId, roomId).orElse(null);
         if (userRoom == null) {
             return ApiResponse.onFailure(null);
         }
@@ -97,7 +97,7 @@ public class GameService {
         long capacity = (room.getRoom_type() == RoomType.SINGLE) ? 2 : 4;
         long halfCapacity = capacity / 2;  // SINGLE=1, DOUBLE=2
 
-        Integer oppositeTeamCount = userRoomRepository.countByRoomidAndTeam(roomId, oppositeTeam);
+        Integer oppositeTeamCount = userRoomRepository.countByRoomIdAndTeam(roomId, oppositeTeam);
         // 이미 반대팀 인원이 halfCapacity면 변경 불가
         if (oppositeTeamCount >= halfCapacity) {
             return ApiResponse.onFailure(null);

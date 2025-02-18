@@ -1,11 +1,11 @@
 package com.prography.demo.repository;
 
 
-import com.prography.demo.domain.User;
+import com.prography.demo.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
-public interface UserRepository extends JpaRepository<User, Integer> {
+@Repository
+public interface UserRepository extends JpaRepository<Users, Integer> {
 
 }

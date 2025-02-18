@@ -15,6 +15,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@AttributeOverride(
+        name = "updated_at",
+        column = @Column(name = "updated_at", insertable = true, updatable = true)
+)
 public class Room extends BaseEntity {
 
     @Id

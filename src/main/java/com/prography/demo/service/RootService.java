@@ -1,6 +1,6 @@
 package com.prography.demo.service;
 
-import com.prography.demo.domain.User;
+import com.prography.demo.domain.Users;
 import com.prography.demo.domain.enumType.UserStatus;
 import com.prography.demo.dto.response.FakerUsersResponse;
 import com.prography.demo.repository.RoomRepository;
@@ -9,9 +9,9 @@ import com.prography.demo.repository.UserRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -43,25 +43,27 @@ public class RootService {
         fakerData.sort(Comparator.comparingInt(FakerUsersResponse.FakerUserData::getId));
 
         for (FakerUsersResponse.FakerUserData data : fakerData) {
-            User user = new User();
-            user.setFakerId(data.getId());     // 응답 값의 id필드는 fakerId로 저장합니다.
-            user.setName(data.getUsername());  // username 필드는 name으로 저장합니다.
-            user.setEmail(data.getEmail());    // email 필드는 그대로 저장합니다.
+            Users users = new Users();
+            users.setFakerId(data.getId());     // 응답 값의 id필드는 fakerId로 저장합니다.
+            users.setName(data.getUsername());  // username 필드는 name으로 저장합니다.
+            users.setEmail(data.getEmail());    // email 필드는 그대로 저장합니다.
 
             // 회원 상태(status)는 응답 값의 id(fakerId)를 기반하여 아래 규칙에 따라 저장합니다.
             int fid = data.getId();
             // 응답 값의 id(fakerId) 값이 30 이하의 회원은 활성(ACTIVE) 상태로 세팅합니다.
             if (fid <= 30) {
-                user.setStatus(UserStatus.ACTIVE);
+                users.setStatus(UserStatus.ACTIVE);
             } // 응답 값의 id(fakerId) 값이 31 이상, 60 이하의 회원은 대기(WAIT) 상태로 세팅합니다.
             else if (fid <= 60) {
-                user.setStatus(UserStatus.WAIT);
+                users.setStatus(UserStatus.WAIT);
             } // 응답 값의 id(fakerId) 값이 61 이상인 회원은 비활성(NON_ACTIVE) 상태로 세팅합니다.
             else {
-                user.setStatus(UserStatus.NON_ACTIVE);
+                users.setStatus(UserStatus.NON_ACTIVE);
             }
-
-            userRepository.save(user);
+            users.setCreated_at(LocalDateTime.now());
+            users.setUpdated_at(LocalDateTime.now());
+            userRepository.save(users);
+            userRepository.flush();
         }
     }
 }

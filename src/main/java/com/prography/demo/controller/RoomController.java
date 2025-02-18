@@ -6,6 +6,11 @@ import com.prography.demo.dto.request.JoinRoomRequest;
 import com.prography.demo.global.api.ApiResponse;
 import com.prography.demo.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,56 +23,133 @@ public class RoomController {
 
     private final RoomService roomService;
 
+    // 방 생성하기
     @PostMapping
-    @Operation(summary = "방 생성", description = "")
+    @Operation(summary = "방 생성 API",
+            description = "방을 생성하려고 하는 user(userId)의 상태가 활성(ACTIVE)상태일 때만, 방을 생성." +
+                    "만약 활성상태가 아닐때는 201 응답을 반환." +
+                    "방을 생성하려고 하는 user(userId)가 현재 참여한 방이 있다면, 방을 생성할 수 없음." +
+                    "만약 참여하고 있는 방이 있을때는 201 응답을 반환." +
+                    " 방은 초기에 대기(WAIT) 상태로 생성." +
+                    " 데이터가 저장되는 시점에 따라 createdAt과 updatedAt을 저장.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "방 생성 요청 객체. userId, roomType, title 정보를 포함합니다.",
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = CreateRoomRequestDto.class),
+                    examples = @ExampleObject(
+                            name = "CreateRoomExample",
+                            value = "{\n  \"userId\": 1,\n  \"roomType\": \"NORMAL\",\n  \"title\": \"Sample Room Title\"\n}"
+                    )
+            )
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "200", description = "API 요청이 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "201", description = "불가능한 요청입니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "500", description = "에러가 발생했습니다.")})
     public ApiResponse<Void> createRoom(@RequestBody CreateRoomRequestDto request) {
         return roomService.createRoom(request);
     }
 
-    // 1) 방 전체 조회
+    // 방 전체 조회
     @GetMapping
-    @Operation(summary = "방 전체 조회", description = """
-        페이징을 위한 size, page 받고, id 기준 오름차순으로 데이터 반환
-        """)
+    @Operation(summary = "방 전체 조회 API",
+            description = "모든 방에 대한 데이터를 반환." +
+                    "id 기준 오름차순으로 데이터를 반환.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "200", description = "API 요청이 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "201", description = "불가능한 요청입니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "500", description = "에러가 발생했습니다.")})
     public ApiResponse<Object> getAllRooms(
-            @RequestParam int size,
-            @RequestParam int page
+            @Parameter(description = "페이지 당 방의 수", example = "10") @RequestParam int size,
+            @Parameter(description = "요청할 페이지 번호 (0부터 시작)", example = "0") @RequestParam int page
     ) {
         return roomService.getAllRooms(page, size);
     }
 
-    // 2) 방 상세 조회
+    // 방 상세 조회
     @GetMapping("/{roomId}")
-    @Operation(summary = "방 상세 조회", description = """
-        roomId에 대한 상세정보 (createdAt, updatedAt 포함)
-        """)
-    public ApiResponse<?> getRoomDetail(@PathVariable Integer roomId) {
+    @Operation(summary = "방 상세 조회 API",
+            description = "roomId를 받아 방에 대한 상세 조회")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "200", description = "API 요청이 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "201", description = "불가능한 요청입니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "500", description = "에러가 발생했습니다.")})
+    public ApiResponse<?> getRoomDetail(@Parameter(description = "조회할 방의 ID", example = "1") @PathVariable Integer roomId
+    )  {
         return roomService.getRoomDetail(roomId);
     }
 
-    // 3) 방 참가 API
+    //방 참가 API
     @PostMapping("/attention/{roomId}")
-    @Operation(summary = "방 참가", description = """
-        - 대기(WAIT) 상태인 방에만 참가 가능<br/>
-        - 유저는 ACTIVE 상태여야 함<br/>
-        - 이미 다른 방에 참가중이면 불가<br/>
-        - 방 정원이 꽉 찼으면 불가 (SINGLE=2, DOUBLE=4)
-        """)
+    @Operation(summary = "방 참가 API",
+            description = "대기(WAIT) 상태인 방에만 참가 가능" +
+            "유저는 ACTIVE 상태여야 함" +
+            "이미 다른 방에 참가중이면 불가" +
+            "방 정원이 꽉 찼으면 불가 (SINGLE=2, DOUBLE=4)")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "200", description = "API 요청이 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "201", description = "불가능한 요청입니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "500", description = "에러가 발생했습니다.")})
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "방 참가 요청. userId를 포함.",
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = JoinRoomRequest.class),
+                    examples = @ExampleObject(
+                            name = "JoinRoomExample",
+                            value = "{\n  \"userId\": 1\n}"
+                    )
+            )
+    )
     public ApiResponse<?> joinRoom(
-            @PathVariable Integer roomId,
+            @Parameter(description = "참가할 방의 ID", example = "1") @PathVariable Integer roomId,
             @RequestBody JoinRoomRequest body
     ) {
         return roomService.joinRoom(roomId, body.getUserId());
     }
 
-
+    // 방 나가기
     @PostMapping("/out/{roomId}")
-    @Operation(summary = "방 나가기 API", description = """
-        - 유저가 방에 참가중이어야 나가기 가능<br/>
-        - 방 상태가 WAIT이어야 가능<br/>
-        - host가 나가면 전체 퇴장 + 방 상태 FINISH
-        """)
-    public ApiResponse<Void> leaveRoom(@PathVariable Integer roomId, @RequestBody ExitRoomRequest body) {
+    @Operation(summary = "방 나가기 API",
+            description = "유저가 방에 참가중이어야" +
+            "방 상태가 WAIT이어야" +
+            "host가 나가면 전체 퇴장" +
+            "방 상태 FINISH")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "방 나가기 요청. userId 포함.",
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = ExitRoomRequest.class),
+                    examples = @ExampleObject(
+                            name = "ExitRoomExample",
+                            value = "{\n  \"userId\": 1\n}"
+                    )
+            )
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "200", description = "API 요청이 성공했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "201", description = "불가능한 요청입니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse
+                    (responseCode = "500", description = "에러가 발생했습니다.")})
+    public ApiResponse<Void> leaveRoom(
+            @Parameter(description = "퇴장할 방의 ID", example = "1") @PathVariable Integer roomId,
+            @RequestBody ExitRoomRequest body
+    ) {
         return roomService.leaveRoom(roomId, body.getUserId());
     }
 }

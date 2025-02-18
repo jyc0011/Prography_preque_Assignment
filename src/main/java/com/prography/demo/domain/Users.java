@@ -11,7 +11,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User extends BaseEntity {
+@AttributeOverride(
+        name = "updated_at",
+        column = @Column(name = "updated_at", insertable = true, updatable = true)
+)
+public class Users extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

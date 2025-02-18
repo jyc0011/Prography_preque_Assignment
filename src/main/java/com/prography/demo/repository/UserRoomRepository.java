@@ -3,22 +3,23 @@ package com.prography.demo.repository;
 import com.prography.demo.domain.UserRoom;
 import com.prography.demo.domain.enumType.TeamType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface UserRoomRepository extends JpaRepository<UserRoom, Integer> {
     // user가 현재 어떤 방에 참여중인지
-    Optional<UserRoom> findByUser_id(Integer user_id);
+    Optional<UserRoom> findByUsersId(Integer user_id);
 
     // 특정 방에 참여중인 사람 수
-    Integer countByRoom_id(Integer room_id);
+    Integer countByRoomId(Integer room_id);
 
     // 특정 유저가 특정 방에 참가중인지
-    Optional<UserRoom> findByUser_idAndRoom_id(Integer user_id, Integer room_id);
+    Optional<UserRoom> findByUsersIdAndRoomId(Integer user_id, Integer room_id);
 
     // 특정 방에 참가중인 모든 UserRoom 목록
-    List<UserRoom> findAllByRoom_id(Integer room_id);
+    List<UserRoom> findAllByRoomId(Integer room_id);
 
-    Integer countByRoomidAndTeam(Integer roomId, TeamType oppositeTeam);
+    Integer countByRoomIdAndTeam(Integer roomId, TeamType oppositeTeam);
 }

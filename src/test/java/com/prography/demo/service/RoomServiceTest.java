@@ -8,14 +8,15 @@ import com.prography.demo.repository.UserRepository;
 import com.prography.demo.repository.UserRoomRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
 
 // 간단 예시. 실제론 @ExtendWith(MockitoExtension.class) + @InjectMocks 사용도 가능
 @SpringBootTest

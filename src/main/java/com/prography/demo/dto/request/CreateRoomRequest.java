@@ -1,7 +1,10 @@
 package com.prography.demo.dto.request;
 
 import com.prography.demo.domain.enumType.RoomType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -13,6 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@AttributeOverride(
+        name = "updated_at",
+        column = @Column(name = "updated_at", insertable = true, updatable = true)
+)
 public class UserRoom extends BaseEntity {
 
     @Id
@@ -20,11 +24,13 @@ public class UserRoom extends BaseEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "room_id")
-    private Integer room_id;
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
 
-    @Column(name = "user_id")
-    private Integer user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users users;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "team")
