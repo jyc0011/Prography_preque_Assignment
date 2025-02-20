@@ -1,6 +1,6 @@
 package com.prography.demo.controller;
 
-import com.prography.demo.dto.response.UserResponseDto;
+import com.prography.demo.dto.response.UserResponse;
 import com.prography.demo.global.api.ApiResponse;
 import com.prography.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +38,7 @@ public class UserController {
                     (responseCode = "500", description = "에러가 발생했습니다.")})
     public ApiResponse<Map<String, Object>> getAllUsers(@Parameter(description = "페이지 크기", example = "10") @RequestParam int size,
                                                         @Parameter(description = "현재 페이지 번호", example = "0") @RequestParam int page) {
-        Page<UserResponseDto> userPage = userService.getAllUsers(page, size);
+        Page<UserResponse> userPage = userService.getAllUsers(page, size);
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("totalElements", userPage.getTotalElements());
         responseBody.put("totalPages", userPage.getTotalPages());

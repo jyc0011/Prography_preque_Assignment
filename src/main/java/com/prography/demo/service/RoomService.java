@@ -7,9 +7,9 @@ import com.prography.demo.domain.enumType.RoomStatus;
 import com.prography.demo.domain.enumType.RoomType;
 import com.prography.demo.domain.enumType.TeamType;
 import com.prography.demo.domain.enumType.UserStatus;
-import com.prography.demo.dto.request.CreateRoomRequestDto;
-import com.prography.demo.dto.response.RoomDetailResponseDto;
-import com.prography.demo.dto.response.RoomListResponseDto;
+import com.prography.demo.dto.request.CreateRoomRequest;
+import com.prography.demo.dto.response.RoomDetailResponse;
+import com.prography.demo.dto.response.RoomListResponse;
 import com.prography.demo.global.api.ApiResponse;
 import com.prography.demo.repository.RoomRepository;
 import com.prography.demo.repository.UserRepository;
@@ -37,7 +37,7 @@ public class RoomService {
     private final UserRoomRepository userRoomRepository;
 
     @Transactional
-    public ApiResponse<Void> createRoom(CreateRoomRequestDto request) {
+    public ApiResponse<Void> createRoom(CreateRoomRequest request) {
         Users users = userRepository.findById(request.getUserId()).orElse(null);
         if (users == null) {
             log.error("createRoom() 실패: userId={}인 유저가 존재하지 않습니다.", request.getUserId());
@@ -77,7 +77,7 @@ public class RoomService {
     public ApiResponse<Object> getAllRooms(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         Page<Room> roomPage = roomRepository.findAll(pageable);
-        Page<RoomListResponseDto> dtoPage = roomPage.map(RoomListResponseDto::fromEntity);
+        Page<RoomListResponse> dtoPage = roomPage.map(RoomListResponse::fromEntity);
 
         int totalElements = (int) dtoPage.getTotalElements();
         int totalPages = dtoPage.getTotalPages();
@@ -91,13 +91,13 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public ApiResponse<RoomDetailResponseDto> getRoomDetail(Integer roomId) {
+    public ApiResponse<RoomDetailResponse> getRoomDetail(Integer roomId) {
         Room room = roomRepository.findById(roomId).orElse(null);
         if (room == null) {
             log.error("getRoomDetail() 실패: roomId={}인 방이 존재하지 않습니다.", roomId);
             return ApiResponse.onFailure(null);
         }
-        RoomDetailResponseDto dto = RoomDetailResponseDto.fromEntity(room);
+        RoomDetailResponse dto = RoomDetailResponse.fromEntity(room);
         return ApiResponse.onSuccess(dto);
     }
 

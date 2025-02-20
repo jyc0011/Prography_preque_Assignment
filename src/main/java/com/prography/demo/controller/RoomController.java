@@ -1,8 +1,6 @@
 package com.prography.demo.controller;
 
-import com.prography.demo.dto.request.CreateRoomRequestDto;
-import com.prography.demo.dto.request.ExitRoomRequest;
-import com.prography.demo.dto.request.JoinRoomRequest;
+import com.prography.demo.dto.request.CreateRoomRequest;
 import com.prography.demo.global.api.ApiResponse;
 import com.prography.demo.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +35,7 @@ public class RoomController {
             description = "방 생성 요청. userId, roomType, title 정보를 포함",
             required = true,
             content = @Content(
-                    schema = @Schema(implementation = CreateRoomRequestDto.class),
+                    schema = @Schema(implementation = CreateRoomRequest.class),
                     examples = @ExampleObject(
                             name = "CreateRoomExample",
                             value = """
@@ -54,7 +52,7 @@ public class RoomController {
                     (responseCode = "200", description = "API 요청이 성공했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse
                     (responseCode = "201", description = "불가능한 요청입니다.")})
-    public ApiResponse<Void> createRoom(@RequestBody CreateRoomRequestDto request) {
+    public ApiResponse<Void> createRoom(@RequestBody CreateRoomRequest request) {
         return roomService.createRoom(request);
     }
 
@@ -112,7 +110,6 @@ public class RoomController {
             description = "방 참가 요청. userId를 포함.",
             required = true,
             content = @Content(
-                    schema = @Schema(implementation = JoinRoomRequest.class),
                     examples = @ExampleObject(
                             name = "JoinRoomExample",
                             value = """
@@ -124,9 +121,9 @@ public class RoomController {
     )
     public ApiResponse<?> joinRoom(
             @Parameter(description = "참가할 방의 ID", example = "1") @PathVariable Integer roomId,
-            @RequestBody JoinRoomRequest body
+            @RequestBody Integer userId
     ) {
-        return roomService.joinRoom(roomId, body.getUserId());
+        return roomService.joinRoom(roomId, userId);
     }
 
     // 방 나가기
@@ -141,7 +138,6 @@ public class RoomController {
             description = "방 나가기 요청. userId 포함.",
             required = true,
             content = @Content(
-                    schema = @Schema(implementation = ExitRoomRequest.class),
                     examples = @ExampleObject(
                             name = "ExitRoomExample",
                             value = """
@@ -160,8 +156,8 @@ public class RoomController {
                     (responseCode = "500", description = "에러가 발생했습니다.")})
     public ApiResponse<Void> leaveRoom(
             @Parameter(description = "퇴장할 방의 ID", example = "1") @PathVariable Integer roomId,
-            @RequestBody ExitRoomRequest body
+            @RequestBody Integer userId
     ) {
-        return roomService.leaveRoom(roomId, body.getUserId());
+        return roomService.leaveRoom(roomId, userId);
     }
 }

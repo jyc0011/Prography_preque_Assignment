@@ -1,14 +1,11 @@
 package com.prography.demo.controller;
 
-import com.prography.demo.dto.request.ChangeTeamRequest;
-import com.prography.demo.dto.request.GameStartRequest;
 import com.prography.demo.global.api.ApiResponse;
 import com.prography.demo.service.GameService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +32,6 @@ public class GameController {
             description = "게임 시작 요청. userId 포함.",
             required = true,
             content = @Content(
-                    schema = @Schema(implementation = GameStartRequest.class),
                     examples = @ExampleObject(
                             name = "GameStartExample",
                             value = """
@@ -54,9 +50,9 @@ public class GameController {
                     (responseCode = "500", description = "에러가 발생했습니다.")})
     public ApiResponse<Void> startGame(
             @Parameter(description = "게임 시작할 방의 ID", example = "1") @PathVariable Integer roomId,
-            @RequestBody GameStartRequest request
+            @RequestBody Integer userId
     ) {
-        return gameService.startGame(roomId, request.getUserId());
+        return gameService.startGame(roomId, userId);
     }
 
     @PutMapping("/team/{roomId}")
@@ -69,7 +65,6 @@ public class GameController {
             description = "팀 변경 요청. userId 포함.",
             required = true,
             content = @Content(
-                    schema = @Schema(implementation = ChangeTeamRequest.class),
                     examples = @ExampleObject(
                             name = "ChangeTeamExample",
                             value = """
@@ -88,8 +83,8 @@ public class GameController {
                     (responseCode = "500", description = "에러가 발생했습니다.")})
     public ApiResponse<Void> changeTeam(
             @Parameter(description = "팀 변경할 방의 ID", example = "1") @PathVariable Integer roomId,
-            @RequestBody ChangeTeamRequest body
+            @RequestBody Integer userId
     ) {
-        return gameService.changeTeam(roomId, body.getUserId());
+        return gameService.changeTeam(roomId, userId);
     }
 }

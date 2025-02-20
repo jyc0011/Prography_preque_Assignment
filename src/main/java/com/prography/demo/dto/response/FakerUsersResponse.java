@@ -13,7 +13,7 @@ public class FakerUsersResponse {
     private int total;
     private List<FakerUserData> data;
 
-    // uuid, firstname, lastname, password, ip, macAddress, website, image 필드는 사용하지 않습니다.
+    // uuid, firstname, lastname, password, ip, macAddress, website, image 필드는 사용X
     @Getter
     @NoArgsConstructor
     public static class FakerUserData {

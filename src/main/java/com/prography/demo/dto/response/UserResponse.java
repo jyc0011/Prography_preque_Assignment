@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponseDto {
+public class UserResponse {
     private Integer id;
     private Integer fakerId;
     private String name;
@@ -19,10 +19,10 @@ public class UserResponseDto {
     private String createdAt;
     private String updatedAt;
 
-    public static UserResponseDto fromEntity(Users users) {
+    public static UserResponse fromEntity(Users users) {
         // 날짜 포맷: yyyy-MM-dd HH:mm:ss
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return UserResponseDto.builder()
+        return UserResponse.builder()
                 .id(users.getId())
                 .fakerId(users.getFakerId())
                 .name(users.getName())
