@@ -26,20 +26,26 @@ public class RoomController {
     // 방 생성하기
     @PostMapping
     @Operation(summary = "방 생성 API",
-            description = "방을 생성하려고 하는 user(userId)의 상태가 활성(ACTIVE)상태일 때만, 방을 생성." +
-                    "만약 활성상태가 아닐때는 201 응답을 반환." +
-                    "방을 생성하려고 하는 user(userId)가 현재 참여한 방이 있다면, 방을 생성할 수 없음." +
-                    "만약 참여하고 있는 방이 있을때는 201 응답을 반환." +
-                    " 방은 초기에 대기(WAIT) 상태로 생성." +
-                    " 데이터가 저장되는 시점에 따라 createdAt과 updatedAt을 저장.")
+            description = """
+                    방을 생성하려고 하는 user(userId)의 상태가 활성(ACTIVE)상태일 때만 방 생성.<br>
+                    만약 활성상태가 아닐때는 201 응답을 반환.<br>
+                    방을 생성하려고 하는 user(userId)가 현재 참여한 방이 있다면, 방을 생성할 수 없음.<br>
+                    만약 참여하고 있는 방이 있을때는 201 응답을 반환.<br>
+                    방은 초기에 대기(WAIT) 상태로 생성.<br>
+                    데이터가 저장되는 시점에 따라 createdAt과 updatedAt을 저장.""")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "방 생성 요청 객체. userId, roomType, title 정보를 포함합니다.",
+            description = "방 생성 요청. userId, roomType, title 정보를 포함",
             required = true,
             content = @Content(
                     schema = @Schema(implementation = CreateRoomRequestDto.class),
                     examples = @ExampleObject(
                             name = "CreateRoomExample",
-                            value = "{\n  \"userId\": 1,\n  \"roomType\": \"NORMAL\",\n  \"title\": \"Sample Room Title\"\n}"
+                            value = """
+                                    {
+                                        "userId": 1,
+                                        "roomType": "NORMAL",
+                                        "title": "Sample Room Title"
+                                    }"""
                     )
             )
     )
@@ -47,9 +53,7 @@ public class RoomController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse
                     (responseCode = "200", description = "API 요청이 성공했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse
-                    (responseCode = "201", description = "불가능한 요청입니다."),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse
-                    (responseCode = "500", description = "에러가 발생했습니다.")})
+                    (responseCode = "201", description = "불가능한 요청입니다.")})
     public ApiResponse<Void> createRoom(@RequestBody CreateRoomRequestDto request) {
         return roomService.createRoom(request);
     }
@@ -57,8 +61,9 @@ public class RoomController {
     // 방 전체 조회
     @GetMapping
     @Operation(summary = "방 전체 조회 API",
-            description = "모든 방에 대한 데이터를 반환." +
-                    "id 기준 오름차순으로 데이터를 반환.")
+            description = """
+                    모든 방에 대한 데이터를 반환.<br>
+                    id 기준 오름차순으로 데이터를 반환.""")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse
                     (responseCode = "200", description = "API 요청이 성공했습니다."),
@@ -81,21 +86,21 @@ public class RoomController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse
                     (responseCode = "200", description = "API 요청이 성공했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse
-                    (responseCode = "201", description = "불가능한 요청입니다."),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse
-                    (responseCode = "500", description = "에러가 발생했습니다.")})
+                    (responseCode = "201", description = "불가능한 요청입니다.")})
     public ApiResponse<?> getRoomDetail(@Parameter(description = "조회할 방의 ID", example = "1") @PathVariable Integer roomId
-    )  {
+    ) {
         return roomService.getRoomDetail(roomId);
     }
 
     //방 참가 API
     @PostMapping("/attention/{roomId}")
     @Operation(summary = "방 참가 API",
-            description = "대기(WAIT) 상태인 방에만 참가 가능" +
-            "유저는 ACTIVE 상태여야 함" +
-            "이미 다른 방에 참가중이면 불가" +
-            "방 정원이 꽉 찼으면 불가 (SINGLE=2, DOUBLE=4)")
+            description = """
+                    대기(WAIT) 상태인 방에만 참가 가능<br>
+                    유저는 ACTIVE 상태여야 함<br>
+                    이미 다른 방에 참가중이면 불가<br>
+                    방 정원이 꽉 찼으면 불가 (SINGLE=2, DOUBLE=4)
+                    """)
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse
                     (responseCode = "200", description = "API 요청이 성공했습니다."),
@@ -110,7 +115,10 @@ public class RoomController {
                     schema = @Schema(implementation = JoinRoomRequest.class),
                     examples = @ExampleObject(
                             name = "JoinRoomExample",
-                            value = "{\n  \"userId\": 1\n}"
+                            value = """
+                                    {
+                                        "userId": 1
+                                    }"""
                     )
             )
     )
@@ -124,10 +132,11 @@ public class RoomController {
     // 방 나가기
     @PostMapping("/out/{roomId}")
     @Operation(summary = "방 나가기 API",
-            description = "유저가 방에 참가중이어야" +
-            "방 상태가 WAIT이어야" +
-            "host가 나가면 전체 퇴장" +
-            "방 상태 FINISH")
+            description = """
+                    유저가 방에 참가중이어야<br>
+                    방 상태가 WAIT이어야<br>
+                    host가 나가면 전체 퇴장<br>
+                    방 상태 FINISH""")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "방 나가기 요청. userId 포함.",
             required = true,
@@ -135,7 +144,10 @@ public class RoomController {
                     schema = @Schema(implementation = ExitRoomRequest.class),
                     examples = @ExampleObject(
                             name = "ExitRoomExample",
-                            value = "{\n  \"userId\": 1\n}"
+                            value = """
+                                    {
+                                        "userId": 1
+                                    }"""
                     )
             )
     )

@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Builder
 public class RoomDetailResponseDto {
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private Integer id;
     private String title;
     private Integer hostId;
@@ -19,8 +20,6 @@ public class RoomDetailResponseDto {
     private String status;
     private String createdAt;
     private String updatedAt;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static RoomDetailResponseDto fromEntity(Room room) {
         return RoomDetailResponseDto.builder()

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository
 public interface UserRoomRepository extends JpaRepository<UserRoom, Integer> {
     // user가 현재 어떤 방에 참여중인지

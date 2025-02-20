@@ -15,7 +15,7 @@ public class ApiResponse<T> {
 
     // 성공
     public static <T> ApiResponse<T> onSuccess(T result) {
-        return new ApiResponse<>(200,  "API 요청이 성공했습니다.", result);
+        return new ApiResponse<>(200, "API 요청이 성공했습니다.", result);
     }
 
     // 실패

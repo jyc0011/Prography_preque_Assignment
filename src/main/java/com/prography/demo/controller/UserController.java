@@ -1,14 +1,10 @@
 package com.prography.demo.controller;
 
-import com.prography.demo.dto.request.InitRequest;
 import com.prography.demo.dto.response.UserResponseDto;
 import com.prography.demo.global.api.ApiResponse;
 import com.prography.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,7 +41,7 @@ public class UserController {
         Page<UserResponseDto> userPage = userService.getAllUsers(page, size);
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("totalElements", userPage.getTotalElements());
-        responseBody.put("totalPages", userPage.getTotalPages() == 0 ? userPage.getTotalPages() : userPage.getTotalPages() - 1);
+        responseBody.put("totalPages", userPage.getTotalPages());
         responseBody.put("userList", userPage.getContent());
         return ApiResponse.onSuccess(responseBody);
     }

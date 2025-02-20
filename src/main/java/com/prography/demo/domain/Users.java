@@ -21,17 +21,17 @@ public class Users extends BaseEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name="fakerId")
+    @Column(name = "fakerId")
     private Integer fakerId;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name="status")
+    @Column(nullable = false, name = "status")
     private UserStatus status;
 
 }

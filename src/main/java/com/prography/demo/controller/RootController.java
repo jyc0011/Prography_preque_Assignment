@@ -37,13 +37,18 @@ public class RootController {
     @Operation(summary = "초기화 API",
             description = "seed와 quantity를 body에 담아서 요청합니다.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "초기 데이터 설정을 위한 요청 객체. `seed`와 `quantity` 값을 포함해야 합니다.",
+            description = "초기 데이터 설정 요청. `seed`와 `quantity` 값을 포함",
             required = true,
             content = @Content(
                     schema = @Schema(implementation = InitRequest.class),
                     examples = @ExampleObject(
                             name = "Init Example",
-                            value = "{\"seed\": 12345, \"quantity\": 100}"
+                            value = """
+                                    {
+                                        "seed": 12345,
+                                        "quantity": 100
+                                    }
+                                    """
                     )
             )
     )
